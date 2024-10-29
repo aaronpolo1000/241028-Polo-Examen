@@ -81,7 +81,8 @@ body{margin-top:20px;}
 </style>
 <script>
 
-let socket =new WebSocket("ws://10.120.2.52:8080/chat");socket.onmessage = function(event) {
+let socket =new WebSocket("ws://localhost:8080/chat");
+socket.onmessage = function(event) {
     let resultado = document.getElementById("resultado");
     let messageHTML = 
         "<div class='chat-message-left pb-4'>" +
