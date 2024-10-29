@@ -13,17 +13,21 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Service
 public class ChatHandler extends TextWebSocketHandler{
 
-	private final List<String> messages = null;
+	public  ArrayList<String> messages= new ArrayList<String>();
 	private final CopyOnWriteArrayList<WebSocketSession> sessions = new CopyOnWriteArrayList<WebSocketSession>();
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		// TODO Auto-generated method stub
 		super.afterConnectionEstablished(session);
+		String lista="";
 		sessions.add(session);
-		
-		
+		for (int i = 0; i < messages.size(); i++) {
+			lista+=messages.get(i);
 		}
+		TextMessage text= new TextMessage(lista);
+		session.sendMessage(text);
+	}
 	
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -37,7 +41,9 @@ public class ChatHandler extends TextWebSocketHandler{
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String receivedMessage = message.getPayload();
+		
 		broadCastMessage(receivedMessage);
+		messages.add(receivedMessage);
 		String keyword="websockect";
 		if(receivedMessage.toLowerCase().contains(keyword)) {
 			
@@ -48,6 +54,7 @@ public class ChatHandler extends TextWebSocketHandler{
 	public void broadCastMessage(String message)throws Exception {
 		for(WebSocketSession s:sessions) {
 			if(s.isOpen()) {
+		
 				s.sendMessage(new TextMessage(message));
 				
 			}
